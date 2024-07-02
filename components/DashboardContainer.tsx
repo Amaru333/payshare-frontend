@@ -1,10 +1,9 @@
-import { ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, View, ViewStyle } from "react-native";
 import React from "react";
-import { ThemedText } from "@/components/ThemedText";
 
-const DashboardContainer = ({ children }: { children: React.ReactNode }) => {
+const DashboardContainer = ({ children, style }: { children: React.ReactNode; style?: ViewStyle }) => {
   return (
-    <ImageBackground source={require("@/assets/images/backgrounds/dashboardbg.png")} style={styles.bgContainer}>
+    <ImageBackground source={require("@/assets/images/backgrounds/dashboardbg.png")} style={[styles.bgContainer, style]}>
       <SafeAreaView style={{ flex: 1 }}>{children}</SafeAreaView>
     </ImageBackground>
   );

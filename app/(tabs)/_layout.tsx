@@ -8,15 +8,15 @@ import { ScrollView } from "react-native";
 import { View } from "react-native";
 import TabBar from "@/components/TabBar";
 
-import HomeIcon from "../../assets/icons/home.svg";
-import HomePurpleIcon from "../../assets/icons/home-purple.svg";
-import GroupIcon from "../../assets/icons/group.svg";
-import GroupPurpleIcon from "../../assets/icons/group-purple.svg";
-import HistoryIcon from "../../assets/icons/history.svg";
-import HistoryPurpleIcon from "../../assets/icons/history-purple.svg";
-import AccountIcon from "../../assets/icons/profile.svg";
-import AccountPurpleIcon from "../../assets/icons/profile-purple.svg";
-import CreateIcon from "../../assets/icons/add.svg";
+import HomeIcon from "@/assets/icons/home.svg";
+import HomePurpleIcon from "@/assets/icons/home-purple.svg";
+import GroupIcon from "@/assets/icons/group.svg";
+import GroupPurpleIcon from "@/assets/icons/group-purple.svg";
+import HistoryIcon from "@/assets/icons/history.svg";
+import HistoryPurpleIcon from "@/assets/icons/history-purple.svg";
+import AccountIcon from "@/assets/icons/profile.svg";
+import AccountPurpleIcon from "@/assets/icons/profile-purple.svg";
+import CreateIcon from "@/assets/icons/add.svg";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
