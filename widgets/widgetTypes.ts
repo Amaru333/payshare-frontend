@@ -2,6 +2,7 @@ import { TextInputProps, TextStyle, TouchableOpacityProps } from "react-native";
 
 export interface UIInputProps extends TextInputProps {
   label: string;
+  disabled?: boolean;
 }
 
 export interface UIButtonProps extends TouchableOpacityProps {

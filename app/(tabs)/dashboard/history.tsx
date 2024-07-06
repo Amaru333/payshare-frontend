@@ -1,12 +1,8 @@
-import { View, Text } from "react-native";
 import React from "react";
+import HistoryPage from "@/screens/history";
 
 const History = () => {
-  return (
-    <View>
-      <Text>History</Text>
-    </View>
-  );
+  return <HistoryPage />;
 };
 
 export default History;

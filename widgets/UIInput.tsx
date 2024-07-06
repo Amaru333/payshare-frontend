@@ -3,11 +3,11 @@ import React from "react";
 import { ThemedText } from "@/components/ThemedText";
 import { UIInputProps } from "./widgetTypes";
 
-const UIInput = ({ label, ...rest }: UIInputProps) => {
+const UIInput = ({ label, disabled = false, ...rest }: UIInputProps) => {
   return (
     <View style={styles.container}>
       <ThemedText style={styles.labelStyle}>{label}</ThemedText>
-      <TextInput style={styles.textInputStyle} placeholderTextColor="#999" {...rest} />
+      <TextInput style={[styles.textInputStyle, { backgroundColor: disabled ? "#999" : "white" }]} placeholderTextColor="#999" {...rest} editable={!disabled} />
     </View>
   );
 };
@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   textInputStyle: {
-    backgroundColor: "white",
     fontSize: 16,
     padding: 12,
     borderRadius: 8,
