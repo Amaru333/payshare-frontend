@@ -1,4 +1,4 @@
-import { TextInputProps, TouchableOpacityProps } from "react-native";
+import { TextInputProps, TextStyle, TouchableOpacityProps } from "react-native";
 
 export interface UIInputProps extends TextInputProps {
   label: string;
@@ -7,6 +7,7 @@ export interface UIInputProps extends TextInputProps {
 export interface UIButtonProps extends TouchableOpacityProps {
   theme?: "primary" | "secondary";
   children: React.ReactNode;
+  textStyle?: TextStyle;
 }
 
 export interface OTPInputProps {

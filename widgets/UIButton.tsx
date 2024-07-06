@@ -3,10 +3,10 @@ import React from "react";
 import { UIButtonProps } from "./widgetTypes";
 import { ThemedText } from "@/components/ThemedText";
 
-const UIButton = ({ children, style, theme = "primary", ...rest }: UIButtonProps) => {
+const UIButton = ({ children, style, theme = "primary", textStyle, ...rest }: UIButtonProps) => {
   return (
     <TouchableOpacity style={[styles.buttonStyle, { backgroundColor: theme === "primary" ? "#AB41FF" : "#543BED" }, style]} activeOpacity={0.8} {...rest}>
-      <ThemedText style={{ fontFamily: "Poppins600", fontSize: 14 }}>{children}</ThemedText>
+      <ThemedText style={[{ fontFamily: "Poppins600", fontSize: 14 }, textStyle]}>{children}</ThemedText>
     </TouchableOpacity>
   );
 };
