@@ -9,7 +9,8 @@ const GroupStack = () => {
       }}
     >
       <Stack.Screen name="index" />
-      <Stack.Screen name="group-details" />
+      <Stack.Screen name="new-group/index" />
+      <Stack.Screen name="new-transaction/[id]/index" />
     </Stack>
   );
 };

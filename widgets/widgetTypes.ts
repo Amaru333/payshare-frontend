@@ -1,6 +1,7 @@
 import { TextInputProps, TextStyle, TouchableOpacityProps } from "react-native";
 
 export interface UIInputProps extends TextInputProps {
+  theme?: "light" | "dark";
   label: string;
   disabled?: boolean;
 }
@@ -21,4 +22,12 @@ export interface UIDropdownProps {
   onChange: (item: { name: string; value: string }) => void;
   value: string;
   searchable?: boolean;
+}
+
+export interface UICheckboxProps {
+  size?: number;
+  selected: boolean;
+  label?: string;
+  labelStyle?: TextStyle;
+  onPress?: (val: boolean) => void;
 }

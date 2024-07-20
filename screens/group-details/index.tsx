@@ -1,16 +1,23 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import React from "react";
 import DashboardContainer from "@/components/DashboardContainer";
 import { ThemedText } from "@/components/ThemedText";
 import UIButton from "@/widgets/UIButton";
 import { convertToCurrency } from "@/functions/currency";
-import SummaryCard from "./SummaryCard";
 import SummaryPage from "./SummaryPage";
 import TransactionsPage from "./TransactionsPage";
 import MembersPage from "./MembersPage";
 import StatsPage from "./StatsPage";
 
 const GroupDetailsPage = () => {
+  const scrollRef = React.createRef<ScrollView>();
+
+  const scrollTop = () => {
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
+  };
   const tabs = ["Summary", "Transactions", "Members", "Stats"];
   const [selectedTab, setSelectedTab] = React.useState(tabs[0]);
   return (
@@ -39,14 +46,22 @@ const GroupDetailsPage = () => {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={{ display: "flex", flexDirection: "row", gap: 20 }}>
             {tabs.map((tab, index) => (
-              <UIButton key={index} onPress={() => setSelectedTab(tab)} textStyle={styles.buttonTextStyle} style={[styles.buttonStyle, { marginLeft: index === 0 ? 20 : 0, marginRight: index === tabs.length - 1 ? 20 : 0, backgroundColor: selectedTab === tab ? "#AB41FF" : "rgba(171,65,255,0.2)" }]}>
+              <UIButton
+                key={index}
+                onPress={() => {
+                  setSelectedTab(tab);
+                  scrollTop();
+                }}
+                textStyle={styles.buttonTextStyle}
+                style={[styles.buttonStyle, { marginLeft: index === 0 ? 20 : 0, marginRight: index === tabs.length - 1 ? 20 : 0, backgroundColor: selectedTab === tab ? "#AB41FF" : "rgba(171,65,255,0.2)" }]}
+              >
                 {tab}
               </UIButton>
             ))}
           </View>
         </ScrollView>
       </View>
-      <ScrollView style={{ marginTop: 20 }} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ marginTop: 20 }} showsVerticalScrollIndicator={false} ref={scrollRef}>
         {selectedTab === "Summary" && <SummaryPage />}
         {selectedTab === "Transactions" && <TransactionsPage />}
         {selectedTab === "Members" && <MembersPage />}

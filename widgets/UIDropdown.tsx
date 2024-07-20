@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Dimensions, KeyboardAvoidingView, Pressable } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Dimensions, KeyboardAvoidingView } from "react-native";
 import React from "react";
 import { UIDropdownProps } from "./widgetTypes";
 import { ThemedText } from "@/components/ThemedText";
