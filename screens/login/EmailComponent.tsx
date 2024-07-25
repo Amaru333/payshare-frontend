@@ -6,15 +6,16 @@ import UIButton from "@/widgets/UIButton";
 import { EmailComponentProps } from "./componentTypes";
 
 const { width: screenWidth } = Dimensions.get("window");
-const EmailComponent = ({ nextPage }: EmailComponentProps) => {
+const EmailComponent = ({ nextPage, email, setEmail, loading }: EmailComponentProps) => {
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   return (
     // <View style={{ height: "100%", width: screenWidth }}>
     //   <ImageBackground source={require("../../assets/images/backgrounds/onboardingbg.png")} style={styles.bgContainer}>
     //     <KeyboardAvoidingView style={styles.bgView}>
     //       <Logo />
     <View style={{ width: screenWidth, display: "flex", alignItems: "center", padding: 24, justifyContent: "space-between" }}>
-      <UIInput label="Email Address" placeholder="user@email.com" keyboardType="email-address" autoComplete="email" inputMode="email" />
-      <UIButton style={{ width: 200 }} onPress={nextPage}>
+      <UIInput label="Email Address" placeholder="user@email.com" keyboardType="email-address" autoComplete="email" inputMode="email" value={email} onChangeText={(e) => setEmail(e)} />
+      <UIButton disabled={!emailRegex.test(email) || loading} style={{ width: 200 }} onPress={nextPage}>
         CONTINUE
       </UIButton>
     </View>

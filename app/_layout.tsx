@@ -7,6 +7,9 @@ import { config } from "@gluestack-ui/config";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useFonts, Poppins_200ExtraLight, Poppins_300Light, Poppins_400Regular, Poppins_500Medium, Poppins_600SemiBold, Poppins_700Bold, Poppins_800ExtraBold } from "@expo-google-fonts/poppins";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { Provider } from "react-redux";
+import store from "@/redux/store";
+import AuthGuard from "@/components/AuthGuard";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,17 +37,21 @@ export default function RootLayout() {
   }
 
   return (
-    <GluestackUIProvider config={config}>
-      <ThemeProvider value={DarkTheme}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="(onboarding)" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-      </ThemeProvider>
-    </GluestackUIProvider>
+    <Provider store={store}>
+      <AuthGuard>
+        <GluestackUIProvider config={config}>
+          <ThemeProvider value={DarkTheme}>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="(onboarding)" />
+              <Stack.Screen name="(tabs)" />
+            </Stack>
+          </ThemeProvider>
+        </GluestackUIProvider>
+      </AuthGuard>
+    </Provider>
   );
 }

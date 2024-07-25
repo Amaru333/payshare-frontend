@@ -10,10 +10,13 @@ export interface UIButtonProps extends TouchableOpacityProps {
   theme?: "primary" | "secondary";
   children: React.ReactNode;
   textStyle?: TextStyle;
+  disabled?: boolean;
 }
 
 export interface OTPInputProps {
   label: string;
+  value: string;
+  onChange: (otp: string) => void;
 }
 
 export interface UIDropdownProps {

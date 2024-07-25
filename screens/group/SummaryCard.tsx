@@ -5,23 +5,32 @@ import { ThemedText } from "@/components/ThemedText";
 
 import GroupIcon from "@/assets/icons/group.svg";
 import ProfileIcon from "@/assets/icons/profile.svg";
-import { SummaryCardProps } from "@/constants/CommonInterfaces";
 import { convertToCurrency } from "@/functions/currency";
 import { router } from "expo-router";
+import { UserInterface } from "@/constants/CommonInterfaces";
 
-const SummaryCard = ({ id, type, name, members, owe, lent }: SummaryCardProps) => {
+interface SummaryCardProps {
+  _id: string;
+  type?: "group" | "individual";
+  group_name: string;
+  members: UserInterface[];
+}
+
+const SummaryCard = ({ _id, type = "group", group_name, members }: SummaryCardProps) => {
+  const owe = 25000;
+  const lent = 25000;
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={() => router.push("/(tabs)/dashboard/group/group-details")}>
+    <TouchableOpacity activeOpacity={0.8} onPress={() => router.push("/(tabs)/dashboard/group/" + _id)}>
       <GradientCard>
         <View style={{ paddingHorizontal: 12, paddingVertical: 20 }}>
           <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <ThemedText style={{ fontFamily: "Poppins600", fontSize: 20 }}>{name}</ThemedText>
+            <ThemedText style={{ fontFamily: "Poppins600", fontSize: 20 }}>{group_name}</ThemedText>
             <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 4 }}>
               {type === "group" ? <GroupIcon width={16} height={16} /> : <ProfileIcon width={12} height={12} />}
               {type === "group" && <ThemedText style={{ fontFamily: "Poppins600", fontSize: 12 }}>{members.length}</ThemedText>}
             </View>
           </View>
-          {owe !== 0 && lent !== 0 ? (
+          {owe > 0 && lent > 0 ? (
             <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: 16 }}>
               <View>
                 <ThemedText style={{ fontSize: 12, fontFamily: "Poppins600" }}>You owe</ThemedText>

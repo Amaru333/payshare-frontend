@@ -8,14 +8,14 @@ import { OTPVerificationProps } from "./componentTypes";
 
 const { width: screenWidth } = Dimensions.get("window");
 
-const OTPVerification = ({ backPage }: OTPVerificationProps) => {
+const OTPVerification = ({ backPage, email, otp, setOtp, onLogin }: OTPVerificationProps) => {
   return (
     <View style={{ width: screenWidth, padding: 24, display: "flex", justifyContent: "space-between" }}>
       <View style={styles.otpContainer}>
-        <ThemedText style={{ fontSize: 14 }}>
-          We have sent an OTP to <ThemedText style={{ fontFamily: "Poppins500", color: "#AB41FF", fontSize: 14 }}>username@email.com</ThemedText>, please verify to continue
+        <ThemedText style={{ fontSize: 14, textAlign: "center" }}>
+          We have sent an OTP to <ThemedText style={{ fontFamily: "Poppins500", color: "#AB41FF", fontSize: 14 }}>{email}</ThemedText>, please verify to continue
         </ThemedText>
-        <OtpInput label="OTP" />
+        <OtpInput label="OTP" value={otp} onChange={(e: string) => setOtp(e)} />
       </View>
       <View style={styles.buttonContainer}>
         <UIButton
@@ -32,7 +32,8 @@ const OTPVerification = ({ backPage }: OTPVerificationProps) => {
             width: screenWidth / 2 - 50,
           }}
           onPress={() => {
-            router.navigate("/create-profile");
+            // router.navigate("/create-profile");
+            onLogin();
           }}
         >
           LOGIN

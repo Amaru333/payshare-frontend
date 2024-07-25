@@ -2,42 +2,56 @@ import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useEffect } from "react";
 import DashboardContainer from "@/components/DashboardContainer";
 import { ThemedText } from "@/components/ThemedText";
-import { useGlobalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import UIInput from "@/widgets/UIInput";
 import UIDropdown from "@/widgets/UIDropdown";
-import { CheckIcon, Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from "@gluestack-ui/themed";
 import UIButton from "@/widgets/UIButton";
 import UICheckbox from "@/widgets/UICheckbox";
 import { convertToCurrency } from "@/functions/currency";
+import httpRequest from "@/utils/httpRequest";
+import { GROUP_API, TRANSACTION_API } from "@/constants/APIConstants";
+import { UserInterface } from "@/constants/CommonInterfaces";
+import { useSelector } from "react-redux";
+import { getUser } from "@/redux/slices/userSlice";
+
+interface IndividualCostInterface {
+  name: string;
+  value: string;
+  cost: string;
+  selected: boolean;
+}
 
 const AddTransactionPage = () => {
-  const glob = useGlobalSearchParams();
+  const { id } = useLocalSearchParams();
 
+  const currentUserDetails = useSelector(getUser);
+
+  const [groupDetails, setGroupDetails] = React.useState();
   const [isAllSelected, setIsAllSelected] = React.useState(true);
+  const [individualCost, setIndividualCost] = React.useState<IndividualCostInterface[]>([]);
+  useEffect(() => {
+    httpRequest
+      .get(GROUP_API.GET_DATA_BY_ID + "/" + id)
+      .then((res) => {
+        setGroupDetails(res.data);
+        setIndividualCost(() =>
+          res.data.members.map((member: UserInterface) => ({
+            name: member.full_name,
+            value: member._id,
+            cost: "0",
+            selected: true,
+          }))
+        );
+      })
+      .catch((err) => {
+        console.log(err, "ERROR");
+      });
+  }, []);
 
-  const [individualCost, setIndividualCost] = React.useState([
-    {
-      name: "Person 1",
-      value: "person1",
-      cost: "0",
-      selected: true,
-    },
-    {
-      name: "Person 2",
-      value: "person2",
-      cost: "0",
-      selected: true,
-    },
-    {
-      name: "Person 3",
-      value: "person3",
-      cost: "0",
-      selected: true,
-    },
-  ]);
   const totalSplitAddedCost = individualCost.reduce((acc, user) => acc + parseFloat(user.cost), 0).toFixed(2);
   const [data, setData] = React.useState({
-    paidBy: individualCost[0].value,
+    transaction_name: "",
+    paidBy: currentUserDetails?._id || "",
     totalCost: "0",
   });
   useEffect(() => {
@@ -59,12 +73,27 @@ const AddTransactionPage = () => {
       });
     });
   }, [data.totalCost, individualCost.map((user) => user.selected).join(",")]);
+
+  const onSubmit = () => {
+    let submitData = {
+      group: id,
+      transaction_name: data.transaction_name,
+      paid_by: data.paidBy,
+      total_cost: parseFloat(data.totalCost).toFixed(2),
+      split: individualCost.map((user) => {
+        return { user: user.value, amount: parseFloat(user.cost).toFixed(2) };
+      }),
+    };
+    httpRequest.post(TRANSACTION_API.BASE, submitData).then((res) => {
+      console.log(res, "RESPONSE");
+    });
+  };
   return (
     <DashboardContainer>
       <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: 100 }}>
         <ThemedText style={{ fontSize: 32, fontFamily: "Poppins600", lineHeight: 40 }}>Add Transaction</ThemedText>
         <View style={{ display: "flex", rowGap: 10, marginTop: 20 }}>
-          <UIInput label="Transaction Name" />
+          <UIInput label="Transaction Name" value={data.transaction_name} onChangeText={(e) => setData({ ...data, transaction_name: e })} />
           <UIInput label="Total Cost" keyboardType="decimal-pad" value={data.totalCost} onChangeText={(e) => setData({ ...data, totalCost: e })} selectTextOnFocus={true} />
           <UIDropdown label="Paid By" items={individualCost} value={data.paidBy} onChange={(e) => setData({ ...data, paidBy: e.value })} searchable />
           <View>
@@ -122,10 +151,12 @@ const AddTransactionPage = () => {
         </View>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 10 }}>
           <ThemedText style={{ fontSize: 14, fontFamily: "Poppins600" }}>
-            Total {convertToCurrency(parseFloat(totalSplitAddedCost), "USD")} out of ${convertToCurrency(parseFloat(data.totalCost), "USD")} split
+            Total {convertToCurrency(parseFloat(totalSplitAddedCost), "USD")} out of {convertToCurrency(parseFloat(data.totalCost), "USD")} split
           </ThemedText>
         </View>
-        <UIButton style={{ marginTop: 50 }}>SAVE</UIButton>
+        <UIButton style={{ marginTop: 50 }} onPress={onSubmit}>
+          SAVE
+        </UIButton>
       </ScrollView>
     </DashboardContainer>
   );
