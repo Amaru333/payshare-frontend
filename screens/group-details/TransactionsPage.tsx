@@ -24,19 +24,11 @@ const TransactionsPage = ({ data }: TransactionDataProps) => {
             createdAt={transaction.createdAt}
             id={transaction._id}
             split={transaction.split}
+            type={transaction.type}
           />
           {idx !== data.length - 1 && <TransactionCardSeparator />}
         </View>
       ))}
-      {/* <TransactionCard />
-      <TransactionCardSeparator />
-      <TransactionCard />
-      <TransactionCardSeparator />
-      <TransactionCard />
-      <TransactionCardSeparator />
-      <TransactionCard />
-      <TransactionCardSeparator />
-      <TransactionCard /> */}
     </View>
   );
 };

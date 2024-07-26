@@ -13,10 +13,11 @@ interface TransactionCardProps {
   id: string;
   split: any;
   currentUser: UserInterface;
+  type: "transaction" | "settle";
 }
 
-const TransactionCard = ({ currentUser, paidBy, amount, transactionName, createdAt, id, split }: TransactionCardProps) => {
-  return (
+const TransactionCard = ({ currentUser, paidBy, amount, transactionName, createdAt, id, split, type }: TransactionCardProps) => {
+  return type === "transaction" ? (
     <View>
       <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
         <ThemedText style={{ flex: 1, marginRight: 10 }}>
@@ -36,6 +37,17 @@ const TransactionCard = ({ currentUser, paidBy, amount, transactionName, created
               </ThemedText>
             )
         )}
+      </View>
+    </View>
+  ) : (
+    <View>
+      <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
+        <ThemedText style={{ flex: 1, marginRight: 10 }}>
+          <ThemedText style={{ color: "#AB41FF", fontFamily: "Poppins500" }}>{paidBy}</ThemedText> settled
+          <ThemedText style={{ color: "#543BED", fontFamily: "Poppins500" }}> {convertToCurrency(amount, "USD")} </ThemedText>
+          to <ThemedText style={{ fontFamily: "Poppins600" }}>{split[0]?.user?.full_name} 🎉</ThemedText>
+        </ThemedText>
+        <ThemedText style={{ fontFamily: "Poppins300", fontSize: 10 }}>{formatDateTime(createdAt)}</ThemedText>
       </View>
     </View>
   );

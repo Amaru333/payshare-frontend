@@ -1,4 +1,4 @@
-export const BACKEND_URL = "https://a5db-49-206-25-2.ngrok-free.app";
+export const BACKEND_URL = "https://c947-2406-7400-70-191b-2c77-9c6d-7244-2dd7.ngrok-free.app";
 export const API_URL = `${BACKEND_URL}/api`;
 
 const USER = API_URL + "/user";

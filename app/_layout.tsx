@@ -10,6 +10,7 @@ import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
 import AuthGuard from "@/components/AuthGuard";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -41,14 +42,16 @@ export default function RootLayout() {
       <AuthGuard>
         <GluestackUIProvider config={config}>
           <ThemeProvider value={DarkTheme}>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen name="(onboarding)" />
-              <Stack.Screen name="(tabs)" />
-            </Stack>
+            <GestureHandlerRootView>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                }}
+              >
+                <Stack.Screen name="(onboarding)" />
+                <Stack.Screen name="(tabs)" />
+              </Stack>
+            </GestureHandlerRootView>
           </ThemeProvider>
         </GluestackUIProvider>
       </AuthGuard>

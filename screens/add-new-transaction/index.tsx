@@ -83,6 +83,7 @@ const AddTransactionPage = () => {
       split: individualCost.map((user) => {
         return { user: user.value, amount: parseFloat(user.cost).toFixed(2) };
       }),
+      type: "transaction",
     };
     httpRequest.post(TRANSACTION_API.BASE, submitData).then((res) => {
       console.log(res, "RESPONSE");

@@ -23,4 +23,5 @@ export interface TransactionInterface {
   paid_by: UserInterface;
   createdBy: UserInterface;
   split: [{ user: UserInterface; amount: number; _id: string }];
+  type: "transaction" | "settle";
 }

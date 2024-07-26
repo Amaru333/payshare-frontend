@@ -29,7 +29,7 @@ const MembersPage = ({ splitData, splitBalances }: MembersPageProps) => {
       </View>
       <View style={{ marginTop: 24, display: "flex", gap: 24 }}>
         {sortSplitBalances(splitBalances)?.map((member, idx) => (
-          <MembersCard member={member} idx={idx} splitData={splitData} />
+          <MembersCard member={member} idx={idx} splitData={splitData} key={idx} />
         ))}
       </View>
     </View>

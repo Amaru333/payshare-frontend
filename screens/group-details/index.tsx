@@ -12,6 +12,10 @@ import { router, useLocalSearchParams } from "expo-router";
 import httpRequest from "@/utils/httpRequest";
 import { GROUP_API, TRANSACTION_API } from "@/constants/APIConstants";
 
+interface ParamProps {
+  id: string;
+}
+
 const GroupDetailsPage = () => {
   const scrollRef = React.createRef<ScrollView>();
   const { id } = useLocalSearchParams();
@@ -134,7 +138,7 @@ const GroupDetailsPage = () => {
         </ScrollView>
       </View>
       <ScrollView style={{ marginTop: 20 }} showsVerticalScrollIndicator={false} ref={scrollRef}>
-        {selectedTab === "Summary" && <SummaryPage data={splitPerPersonData} />}
+        {selectedTab === "Summary" && <SummaryPage data={splitPerPersonData} groupID={id as string} />}
         {selectedTab === "Transactions" && <TransactionsPage data={transactionsData} />}
         {selectedTab === "Members" && <MembersPage splitData={splitPerPersonData} splitBalances={splitBalances} />}
         {selectedTab === "Stats" && <StatsPage />}
