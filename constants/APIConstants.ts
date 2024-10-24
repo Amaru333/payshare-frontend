@@ -1,4 +1,4 @@
-export const BACKEND_URL = "https://c947-2406-7400-70-191b-2c77-9c6d-7244-2dd7.ngrok-free.app";
+export const BACKEND_URL = "https://1cd2-173-95-57-195.ngrok-free.app";
 export const API_URL = `${BACKEND_URL}/api`;
 
 const USER = API_URL + "/user";
@@ -21,6 +21,7 @@ export const GROUP_API = {
   BASE: GROUP,
   GET_SPLIT_BALANCES: GROUP + "/balances",
   GET_DATA_BY_ID: GROUP + "/id",
+  COUNT: GROUP + "/count",
 };
 
 export const TRANSACTION_API = {

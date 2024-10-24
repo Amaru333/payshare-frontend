@@ -4,7 +4,7 @@ import GradientCard from "@/components/GradientCard";
 import { ThemedText } from "@/components/ThemedText";
 import { convertToCurrency } from "@/functions/currency";
 import { UserInterface } from "@/constants/CommonInterfaces";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "@/redux/slices/userSlice";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated, { runOnJS, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -12,6 +12,7 @@ import FullPaymentModal from "./FullPaymentModal";
 import PartialPaymentModal from "./PartialPaymentModal";
 import httpRequest from "@/utils/httpRequest";
 import { TRANSACTION_API } from "@/constants/APIConstants";
+import { addTransactionToGroup } from "@/redux/slices/transactionSlice";
 
 const { width } = Dimensions.get("window");
 const THRESHOLD = width * 0.1;
@@ -24,6 +25,7 @@ interface SummaryCardProps {
 }
 
 const SummaryCard = ({ amount, paid_by, paid_to, groupID }: SummaryCardProps) => {
+  const dispatch = useDispatch();
   const [showFullPaymentModal, setShowFullPaymentModal] = React.useState(false);
   const [showPartialPaymentModal, setShowPartialPaymentModal] = React.useState(false);
 
@@ -74,12 +76,13 @@ const SummaryCard = ({ amount, paid_by, paid_to, groupID }: SummaryCardProps) =>
     let submitData = {
       group: groupID,
       transaction_name: "Settle",
-      paid_by: paid_by._id,
+      paid_by: paid_by?._id,
       total_cost: paid_amount,
       split: { user: paid_to._id, amount: paid_amount },
       type: "settle",
     };
     await httpRequest.post(TRANSACTION_API.BASE, submitData).then((res) => {
+      dispatch(addTransactionToGroup({ groupID: groupID, transaction: res.data }));
       console.log(res, "RESPONSE");
     });
   };

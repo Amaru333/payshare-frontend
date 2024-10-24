@@ -18,6 +18,7 @@ const MembersPage = ({ splitData, splitBalances }: MembersPageProps) => {
     otherMembers = otherMembers.sort((a, b) => a?.amount - b?.amount);
     return [currentUser, ...otherMembers];
   };
+  console.log(splitBalances, splitData, "SPLIT BALANCES");
   return (
     <View style={{ paddingHorizontal: 20, paddingBottom: 100 }}>
       <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>

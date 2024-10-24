@@ -11,22 +11,21 @@ import StatsPage from "./StatsPage";
 import { router, useLocalSearchParams } from "expo-router";
 import httpRequest from "@/utils/httpRequest";
 import { GROUP_API, TRANSACTION_API } from "@/constants/APIConstants";
-
-interface ParamProps {
-  id: string;
-}
+import { useDispatch, useSelector } from "react-redux";
+import { getGroupSplitByID, getSplitBalancesByID, getTransactionsByGroupID, setTransactionRedux } from "@/redux/slices/transactionSlice";
+import { addGroupRedux, getGroupDetailsByID } from "@/redux/slices/groupSlice";
 
 const GroupDetailsPage = () => {
+  const dispatch = useDispatch();
+
   const scrollRef = React.createRef<ScrollView>();
   const { id } = useLocalSearchParams();
 
-  const [groupDetails, setGroupDetails] = React.useState({
-    group_name: "",
-    members: [],
-  });
-  const [transactionsData, setTransactionsData] = React.useState([]);
-  const [splitBalances, setSplitBalances] = React.useState([]);
-  const [splitPerPersonData, setSplitPerPersonData] = React.useState<any>([]);
+  const transactionsReduxData = useSelector(getTransactionsByGroupID(id as string));
+  const splitPerPersonReduxData = useSelector(getGroupSplitByID(id as string));
+  const splitBalanceReduxData = useSelector(getSplitBalancesByID(id as string));
+
+  const groupDetailsReduxData = useSelector(getGroupDetailsByID(id as string));
 
   const scrollTop = () => {
     scrollRef.current?.scrollTo({
@@ -38,59 +37,28 @@ const GroupDetailsPage = () => {
   const [selectedTab, setSelectedTab] = React.useState(tabs[0]);
 
   useEffect(() => {
-    httpRequest
-      .get(GROUP_API.GET_DATA_BY_ID + "/" + id)
-      .then((res) => {
-        setGroupDetails(res.data);
-      })
-      .catch((err) => {
-        console.log(err, "ERROR");
-      });
-    httpRequest
-      .get(GROUP_API.GET_SPLIT_BALANCES + "/" + id)
-      .then((res) => {
-        setSplitBalances(res.data);
-        const clonedArray = JSON.parse(JSON.stringify(res.data));
-        let newArray = [];
-        let positiveBalances = clonedArray.filter((acc: any) => acc?.amount >= 0);
-        let negativeBalances = clonedArray.filter((acc: any) => acc?.amount < 0);
-
-        while (positiveBalances.length > 0 && negativeBalances.length > 0) {
-          let posBalance = JSON.parse(JSON.stringify(positiveBalances[0]));
-          let negBalance = JSON.parse(JSON.stringify(negativeBalances[0]));
-          const obj = {
-            paid_to: posBalance.user,
-            paid_by: negBalance.user,
-            amount: Math.min(posBalance.amount, Math.abs(negBalance.amount)),
-          };
-          newArray.push(obj);
-          if (posBalance.amount === Math.abs(negBalance.amount)) {
-            positiveBalances.shift();
-            negativeBalances.shift();
-          } else if (posBalance.amount > Math.abs(negBalance.amount)) {
-            positiveBalances[0].amount -= Math.abs(negBalance.amount);
-            negativeBalances.shift();
-          } else {
-            negativeBalances[0].amount += posBalance.amount;
-            positiveBalances.shift();
-          }
-        }
-        setSplitPerPersonData(newArray);
-      })
-      .catch((err) => {
-        console.log(err, "ERROR");
-      });
-    httpRequest
-      .get(TRANSACTION_API.BASE + "/" + id)
-      .then((res) => {
-        setTransactionsData(res.data);
-      })
-      .catch((err) => {
-        console.log(err, "ERROR");
-      });
+    if (!groupDetailsReduxData) {
+      httpRequest
+        .get(GROUP_API.GET_DATA_BY_ID + "/" + id)
+        .then((res) => {
+          console.log("REACHED DUPLICATE");
+          dispatch(addGroupRedux(res.data));
+        })
+        .catch((err) => {
+          console.log(err, "ERROR");
+        });
+    }
+    if (!transactionsReduxData) {
+      httpRequest
+        .get(TRANSACTION_API.BASE + "/" + id)
+        .then((res) => {
+          dispatch(setTransactionRedux({ groupID: id, transactions: res.data }));
+        })
+        .catch((err) => {
+          console.log(err, "ERROR");
+        });
+    }
   }, []);
-
-  console.log(splitPerPersonData, "groupDetails");
 
   return (
     <DashboardContainer>
@@ -98,7 +66,7 @@ const GroupDetailsPage = () => {
         <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <View style={{ flex: 1 }}>
             <ThemedText numberOfLines={1} style={{ fontFamily: "Poppins600", fontSize: 24, lineHeight: 40 }}>
-              {groupDetails.group_name}
+              {groupDetailsReduxData?.group_name}
             </ThemedText>
           </View>
           <View style={{ width: 110 }}>
@@ -138,9 +106,9 @@ const GroupDetailsPage = () => {
         </ScrollView>
       </View>
       <ScrollView style={{ marginTop: 20 }} showsVerticalScrollIndicator={false} ref={scrollRef}>
-        {selectedTab === "Summary" && <SummaryPage data={splitPerPersonData} groupID={id as string} />}
-        {selectedTab === "Transactions" && <TransactionsPage data={transactionsData} />}
-        {selectedTab === "Members" && <MembersPage splitData={splitPerPersonData} splitBalances={splitBalances} />}
+        {selectedTab === "Summary" && <SummaryPage data={splitPerPersonReduxData} groupID={id as string} />}
+        {selectedTab === "Transactions" && <TransactionsPage data={transactionsReduxData?.transactions} />}
+        {selectedTab === "Members" && <MembersPage splitData={splitPerPersonReduxData} splitBalances={splitBalanceReduxData} />}
         {selectedTab === "Stats" && <StatsPage />}
       </ScrollView>
     </DashboardContainer>

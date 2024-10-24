@@ -14,7 +14,7 @@ const TransactionsPage = ({ data }: TransactionDataProps) => {
   const currentUser = useSelector(getUser);
   return (
     <View style={{ padding: 20, paddingBottom: 100 }}>
-      {data.map((transaction, idx) => (
+      {data?.map((transaction, idx) => (
         <View key={idx}>
           <TransactionCard
             currentUser={currentUser}

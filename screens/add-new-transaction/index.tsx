@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useEffect } from "react";
 import DashboardContainer from "@/components/DashboardContainer";
 import { ThemedText } from "@/components/ThemedText";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import UIInput from "@/widgets/UIInput";
 import UIDropdown from "@/widgets/UIDropdown";
 import UIButton from "@/widgets/UIButton";
@@ -11,8 +11,9 @@ import { convertToCurrency } from "@/functions/currency";
 import httpRequest from "@/utils/httpRequest";
 import { GROUP_API, TRANSACTION_API } from "@/constants/APIConstants";
 import { UserInterface } from "@/constants/CommonInterfaces";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "@/redux/slices/userSlice";
+import { addTransactionToGroup } from "@/redux/slices/transactionSlice";
 
 interface IndividualCostInterface {
   name: string;
@@ -22,8 +23,9 @@ interface IndividualCostInterface {
 }
 
 const AddTransactionPage = () => {
-  const { id } = useLocalSearchParams();
+  const dispatch = useDispatch();
 
+  const { id } = useLocalSearchParams();
   const currentUserDetails = useSelector(getUser);
 
   const [groupDetails, setGroupDetails] = React.useState();
@@ -86,7 +88,14 @@ const AddTransactionPage = () => {
       type: "transaction",
     };
     httpRequest.post(TRANSACTION_API.BASE, submitData).then((res) => {
-      console.log(res, "RESPONSE");
+      console.log(res, "RESPONSE _ADD TRANSACTION");
+      dispatch(addTransactionToGroup({ groupID: id, transaction: res.data }));
+      setData({
+        transaction_name: "",
+        paidBy: currentUserDetails?._id || "",
+        totalCost: "0",
+      });
+      router.navigate("/dashboard/group/" + id);
     });
   };
   return (
